@@ -90,7 +90,7 @@ function CalendarContent({ data, sheetId }: { data: SheetData; sheetId: string }
               <select
                 value={entry?.recipe ?? ''}
                 onChange={(e) => assignMutation.mutate({ date, recipeName: e.target.value })}
-                className="flex-1 rounded-md border px-2 py-1.5 text-sm"
+                className="min-w-0 flex-1 rounded-md border px-2 py-1.5 text-sm"
               >
                 <option value="">Nothing planned</option>
                 {data.recipes.map((r) => (

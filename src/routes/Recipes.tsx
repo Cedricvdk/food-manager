@@ -35,9 +35,9 @@ export default function Recipes() {
                 className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50"
               >
                 {r.image ? (
-                  <img src={r.image} alt="" className="h-10 w-10 rounded object-cover" />
+                  <img src={r.image} alt="" className="h-20 w-20 shrink-0 rounded object-cover" />
                 ) : (
-                  <div className="h-10 w-10 rounded bg-slate-100" />
+                  <div className="h-20 w-20 shrink-0 rounded bg-slate-100" />
                 )}
                 {r.name}
               </Link>

@@ -128,7 +128,7 @@ export default function Settings() {
             type="text"
             value={sheetIdInput}
             onChange={(e) => setSheetIdInput(e.target.value)}
-            placeholder="1_1xMUsJELeuyqetilZJm4uD4YdH71WS6OgPWAwvFLFk"
+            placeholder="e.g. 1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789abcdefg"
             className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
           />
         </label>
