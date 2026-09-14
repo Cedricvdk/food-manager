@@ -24,7 +24,7 @@ export function useSheetData() {
       const [recipesR, ingredientsR, categoriesR, recipeIngredientsR, calendarR] = await batchGetValues(
         sheetId,
         [
-          'Recipes!A2:B1000',
+          'Recipes!A2:C1000',
           'Ingredients!A2:B1000',
           'Categories!A2:B1000',
           'RecipeIngredients!A2:D1000',
@@ -34,7 +34,7 @@ export function useSheetData() {
 
       const recipes: Recipe[] = (recipesR.values ?? [])
         .filter((r) => r[0]?.trim())
-        .map((r) => ({ name: r[0].trim(), link: (r[1] ?? '').trim() }))
+        .map((r) => ({ name: r[0].trim(), link: (r[1] ?? '').trim(), image: (r[2] ?? '').trim() }))
 
       const ingredients: Ingredient[] = (ingredientsR.values ?? [])
         .filter((r) => r[0]?.trim())

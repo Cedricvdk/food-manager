@@ -10,6 +10,7 @@ export interface ImportIngredient {
 export interface ImportRecipeInput {
   name: string
   link: string
+  image?: string
   ingredients: ImportIngredient[]
 }
 
@@ -54,7 +55,7 @@ export async function importRecipe(
     )
   }
 
-  await appendValues(spreadsheetId, 'Recipes!A:B', [[recipe.name, recipe.link]])
+  await appendValues(spreadsheetId, 'Recipes!A:C', [[recipe.name, recipe.link, recipe.image ?? '']])
   await appendValues(
     spreadsheetId,
     'RecipeIngredients!A:D',

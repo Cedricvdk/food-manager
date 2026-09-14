@@ -35,6 +35,13 @@ function RecipeDetailContent({ name, data }: { name: string; data: SheetData }) 
         <Link to="/recipes" className="text-sm text-emerald-700 underline">
           ← Back to recipes
         </Link>
+        {recipe.image && (
+          <img
+            src={recipe.image}
+            alt={recipe.name}
+            className="mt-2 h-48 w-full rounded-lg object-cover"
+          />
+        )}
         <h1 className="mt-2 text-xl font-semibold text-slate-700">{recipe.name}</h1>
         {recipe.link && (
           <a

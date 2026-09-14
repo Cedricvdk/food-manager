@@ -1,7 +1,7 @@
 import { addSheets, getSheetTitles, updateValues } from './sheetsClient'
 
 export const SCHEMA: Record<string, string[]> = {
-  Recipes: ['Name', 'Link'],
+  Recipes: ['Name', 'Link', 'Image'],
   Ingredients: ['Name', 'Category'],
   Categories: ['Category', 'SortOrder'],
   RecipeIngredients: ['Recipe', 'Ingredient', 'Quantity', 'Unit'],

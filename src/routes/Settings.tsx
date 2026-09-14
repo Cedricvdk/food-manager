@@ -3,6 +3,7 @@ import { requestAccessToken, signOut } from '../lib/google/auth'
 import { ensureSchema } from '../lib/google/schema'
 import { migrateIngredients, type MigrateIngredientsResult } from '../lib/google/migrateIngredients'
 import { fixDriftedCategories, type FixCategoriesResult } from '../lib/google/fixCategories'
+import { ensureRecipeImageColumn } from '../lib/google/addImageColumn'
 import { useAuthStore } from '../store/authStore'
 import { useSettingsStore } from '../store/settingsStore'
 
@@ -19,6 +20,8 @@ export default function Settings() {
   const [fixResult, setFixResult] = useState<FixCategoriesResult | null>(null)
   const [fixError, setFixError] = useState<string | null>(null)
   const [fixBusy, setFixBusy] = useState(false)
+  const [imageColStatus, setImageColStatus] = useState<string | null>(null)
+  const [imageColBusy, setImageColBusy] = useState(false)
 
   const isSignedIn = !!accessToken
 
@@ -63,6 +66,19 @@ export default function Settings() {
       setFixError(err instanceof Error ? err.message : String(err))
     } finally {
       setFixBusy(false)
+    }
+  }
+
+  async function handleAddImageColumn() {
+    setImageColStatus(null)
+    setImageColBusy(true)
+    try {
+      const added = await ensureRecipeImageColumn(sheetId)
+      setImageColStatus(added ? 'Added the Image column header.' : 'Already there.')
+    } catch (err) {
+      setImageColStatus(`Error: ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setImageColBusy(false)
     }
   }
 
@@ -227,6 +243,24 @@ export default function Settings() {
               {fixResult.categoryRowsRemoved} redundant category row(s).
             </p>
           )}
+        </section>
+      )}
+
+      {isSignedIn && sheetId && (
+        <section className="rounded-lg border bg-white p-4">
+          <h2 className="mb-1 font-semibold text-slate-700">Add recipe image column</h2>
+          <p className="mb-3 text-sm text-slate-500">
+            Adds an "Image" header to the <code>Recipes</code> tab (column C) so future imports can
+            carry a thumbnail. Safe to click more than once.
+          </p>
+          <button
+            onClick={handleAddImageColumn}
+            disabled={imageColBusy}
+            className="rounded-md bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+          >
+            {imageColBusy ? 'Working…' : 'Add Image column'}
+          </button>
+          {imageColStatus && <p className="mt-2 text-sm text-slate-600">{imageColStatus}</p>}
         </section>
       )}
     </div>

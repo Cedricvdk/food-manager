@@ -1,6 +1,7 @@
 export interface Recipe {
   name: string
   link: string
+  image: string
 }
 
 export interface Ingredient {

@@ -32,8 +32,13 @@ export default function Recipes() {
             <li key={r.name}>
               <Link
                 to={`/recipes/${encodeURIComponent(r.name)}`}
-                className="block px-4 py-3 hover:bg-slate-50"
+                className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50"
               >
+                {r.image ? (
+                  <img src={r.image} alt="" className="h-10 w-10 rounded object-cover" />
+                ) : (
+                  <div className="h-10 w-10 rounded bg-slate-100" />
+                )}
                 {r.name}
               </Link>
             </li>
