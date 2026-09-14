@@ -2,7 +2,14 @@ import { useQuery } from '@tanstack/react-query'
 import { batchGetValues } from '../lib/google/sheetsClient'
 import { useAuthStore } from '../store/authStore'
 import { useSettingsStore } from '../store/settingsStore'
-import type { CalendarEntry, Category, Ingredient, Recipe, RecipeIngredient } from '../types/sheet'
+import type {
+  CalendarEntry,
+  Category,
+  Ingredient,
+  Recipe,
+  RecipeIngredient,
+  ShoppingListItem,
+} from '../types/sheet'
 
 export interface SheetData {
   recipes: Recipe[]
@@ -10,6 +17,7 @@ export interface SheetData {
   categories: Category[]
   recipeIngredients: RecipeIngredient[]
   calendar: CalendarEntry[]
+  shoppingList: ShoppingListItem[]
 }
 
 export function useSheetData() {
@@ -21,16 +29,15 @@ export function useSheetData() {
     enabled: !!accessToken && !!sheetId,
     staleTime: 60_000,
     queryFn: async () => {
-      const [recipesR, ingredientsR, categoriesR, recipeIngredientsR, calendarR] = await batchGetValues(
-        sheetId,
-        [
+      const [recipesR, ingredientsR, categoriesR, recipeIngredientsR, calendarR, shoppingListR] =
+        await batchGetValues(sheetId, [
           'Recipes!A2:C1000',
           'Ingredients!A2:B1000',
           'Categories!A2:B1000',
           'RecipeIngredients!A2:D1000',
           'Calendar!A2:C1000',
-        ],
-      )
+          'ShoppingList!A2:E1000',
+        ])
 
       const recipes: Recipe[] = (recipesR.values ?? [])
         .filter((r) => r[0]?.trim())
@@ -61,7 +68,17 @@ export function useSheetData() {
           calendarEventId: (r[2] ?? '').trim(),
         }))
 
-      return { recipes, ingredients, categories, recipeIngredients, calendar }
+      const shoppingList: ShoppingListItem[] = (shoppingListR.values ?? [])
+        .filter((r) => r[0]?.trim())
+        .map((r) => ({
+          ingredient: r[0].trim(),
+          quantity: (r[1] ?? '').trim(),
+          unit: (r[2] ?? '').trim(),
+          category: (r[3] ?? '').trim(),
+          checked: (r[4] ?? '').trim().toUpperCase() === 'TRUE',
+        }))
+
+      return { recipes, ingredients, categories, recipeIngredients, calendar, shoppingList }
     },
   })
 }
