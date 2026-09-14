@@ -72,3 +72,24 @@ export async function clearValues(spreadsheetId: string, range: string): Promise
   const res = await authFetch(url, { method: 'POST' })
   if (!res.ok) throw new Error(`Sheets clear failed: ${res.status} ${await res.text()}`)
 }
+
+export async function getSheetTitles(spreadsheetId: string): Promise<string[]> {
+  const url = `${SHEETS_BASE}/${spreadsheetId}?fields=sheets.properties.title`
+  const res = await authFetch(url)
+  if (!res.ok) throw new Error(`Sheets get failed: ${res.status} ${await res.text()}`)
+  const data = (await res.json()) as { sheets?: { properties: { title: string } }[] }
+  return (data.sheets ?? []).map((s) => s.properties.title)
+}
+
+export async function addSheets(spreadsheetId: string, titles: string[]): Promise<void> {
+  if (titles.length === 0) return
+  const url = `${SHEETS_BASE}/${spreadsheetId}:batchUpdate`
+  const res = await authFetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requests: titles.map((title) => ({ addSheet: { properties: { title } } })),
+    }),
+  })
+  if (!res.ok) throw new Error(`Sheets addSheet failed: ${res.status} ${await res.text()}`)
+}
